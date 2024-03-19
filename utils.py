@@ -276,6 +276,20 @@ class ResizeVal(object):
         image = tfms(image)
         return image
 
+class ResizeMaxDimension(transforms.Resize):
+    def __init__(self, max_dimension):
+        self.max_dimension = max_dimension
+
+    def __call__(self, img):
+        width, height = img.size
+        max_dim = max(width, height)
+        if max_dim > self.max_dimension:
+            scale_factor = self.max_dimension / max_dim
+            new_width = int(width * scale_factor)
+            new_height = int(height * scale_factor)
+            return img.resize((new_width, new_height))
+        else:
+            return img
 
 class CrowdsDataset(Dataset):
     def __init__(self, path, transform=None):
@@ -310,14 +324,14 @@ train_transform = transforms.Compose(
     ]
 )
 
-val_transform = transforms.Compose(
-    [
+val_transform = transforms.Compose([
         #RandomCrop(256),
         #RandomFlip(),
         #LabelNormalize(norm),
         #Resize(size=(512,512)),
+        ResizeMaxDimension(max_dimension=512),
         ToTensor(),
-        DynamicNormalize()
+        DynamicNormalize()   
     ]
 )
 
