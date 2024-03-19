@@ -11,6 +11,7 @@ from torch.utils.data import Dataset
 import torchvision.transforms as transforms
 import torch
 
+norm = 100
 
 def show_gt(img_path):
   gt_path = img_path.replace("img", "gt").replace(".jpg", ".txt")
@@ -318,7 +319,7 @@ train_transform = transforms.Compose(
     [
         RandomCrop(256),
         RandomFlip(),
-        LabelNormalize(100),
+        LabelNormalize(norm),
         ToTensor(),
         DynamicNormalize()             #normalize dinamically so that the mean is 0 and std is 1
     ]
@@ -329,7 +330,6 @@ val_transform = transforms.Compose([
         #RandomFlip(),
         #LabelNormalize(norm),
         #Resize(size=(512,512)),
-        ResizeMaxDimension(max_dimension=512),
         ToTensor(),
         DynamicNormalize()   
     ]
@@ -337,12 +337,14 @@ val_transform = transforms.Compose([
 
 test_transform = transforms.Compose([
     #ResizeVal(size=(512,512)),
+    ResizeMaxDimension(max_dimension=512),
     transforms.ToTensor(),
     DynamicNormalizeVal()
 ])
 
 def single_evaluate(model, image_path, norm):
     image = Image.open(image_path)
+    #image = ResizeMaxDimension(max_dimension=512)(image)
     image = test_transform(image).float()
     image = image.unsqueeze(0)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")

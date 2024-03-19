@@ -54,9 +54,9 @@ if file is not None:
             # Load the selected model
             device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
             if selected_model == "Model 1":
-                model_path = 'models\model1-50epochs-lr5.pt'
+                model_path = 'models/model1-50epochs-lr5.pt'
             else:
-                model_path = 'models\model2-lr6-unfreezed.pt'
+                model_path = 'models/model2-lr6-unfreezed.pt'
             model = load_model(model_path, device)
             click = True
         
