@@ -8,9 +8,9 @@ from utils import test_transform
 from models import CGDRCN1, MyFC
 from matplotlib import cm as CM
 from utils import single_evaluate
+from config import norm
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-norm = 100
 
 # Function to load the model
 def load_model(model_path, device):
